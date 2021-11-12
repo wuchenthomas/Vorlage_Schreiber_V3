@@ -1,0 +1,84 @@
+
+% RFFE Latex Vorlage:
+% hier "de" oder "en" eintragen: 
+\documentclass[de]{RFFE_LETTER}
+%--------------------------set variables-----------------------------
+\newcommand{\VAR}[1]{}
+\newcommand{\FSIZE}{11} %Font Size for Subject
+\newcommand{\Angebotsbezeichnung}{\VAR{Ang.Bez}}
+\newcommand{\AngebotsNr}{\VAR{Ang.Nr}}
+\newcommand{\AngDatum}{\VAR{Ang.Dat}}
+\newcommand{\Absender}{\VAR{Absender}}
+\newcommand{\stdPreis}{\VAR{Ang.StdPr}}
+\newcommand{\gesStd}{\VAR{Ang.GesStd}}
+\newcommand{\Ablaufdatum}{\VAR{Ang.AblDat}} % Wann verliert das Angebot seine Gültigkeit
+
+\newcommand{\kdFaN}{\VAR{kd.FaN}} %Kundenfirmaname
+\newcommand{\kdFaNErg}{\VAR{kd.FaNErg}} %Kundenfirmaname Ergänzung
+\newcommand{\kdVN}{\VAR{kd.VN}} %Kundenvorname
+\newcommand{\kdNN}{\VAR{kd.NN}} %Kundennachname
+\newcommand{\kdPLZ}{\VAR{kd.PLZ}} %Postleitzahl
+\newcommand{\kdAnschr}{\VAR{kd.Anschr}} %Anschrift
+\newcommand{\kdSt}{\VAR{kd.St}} %Stadt
+\newcommand{\kdGeschl}{\VAR{kd.Geschl}}
+\newcommand{\Anrede}{%
+	\ifthenelse{\equal{\kdGeschl}{M}}
+	{Sehr geehrter Herr \VAR{kd.Titel}}
+	{Sehr geehrte Frau \VAR{kd.Titel}}%
+}
+
+%--------------Transfer variables to Komascript------------------
+\setkomavar{AngebotsNr}{\AngebotsNr}
+\setkomavar{AngDatum}{\AngDatum}
+\setkomavar{fromname}{\Absender}
+\setkomavar{subject}[]{\fontsize{\FSIZE}{11}{\selectfont Angebot \AngebotsNr\, \glqq\Angebotsbezeichnung\grqq}}
+
+%----------------------end setting variables--------------------------
+\begin{document}
+	\begin{letter}
+	{
+		% Hier Adresse eintragen, wer bekommts?
+		\kdFaN\newline
+		\kdFaNErg\newline
+		\kdVN\:\kdNN\newline
+		\kdAnschr\newline
+		\kdPLZ\:\kdSt
+	}
+	% Hier Autor eintragen
+
+	% Falls Teile der Geschäftszeile nicht benötigt, einfach auskommentieren:
+	% Ihr müsst nur entweder den deutschen oder den englischen Teil anpassen
+	
+	\ifthenelse{\equal{\classtoggle}{de}}
+	{
+		%Deutsch
+		%\setkomavar{myref}[Unser Zeichen]{xyz}
+		%\setkomavar{yourref}[Ihr Zeichen]{abs}
+		%\setkomavar{invoice}[Angebotsnummer]{Axxxx}
+		%
+		%\setkomavar{subject}[Betr.: ]{Latex Vorlage}
+		\opening{\Anrede\,\kdNN,}
+		
+	}
+	{
+		%Englisch
+		\opening{Dear Mr. \kdNN,}
+	}
+		\openup 0.15em
+	%Der Briefinhalt steht in dieser Datei
+	{\input{Angebot_Inhalt.tex}}
+	
+	\ifthenelse{\equal{\classtoggle}{de}}
+	{
+		\closing{Mit freundlichen Grüßen,}
+	}
+	{
+		\closing{Best regards,}
+	}
+		
+	\end{letter}
+\input{erklaerung.tex}
+\newpage
+\input{ZVEI.tex}
+
+\end{document}
