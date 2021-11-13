@@ -1,16 +1,26 @@
-# This is a sample Python script.
-
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
-
-
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+import sys
+from PyQt5 import QtWidgets
+from Wd_Angbotsvorlage import Wd_Angbotsvorlage
+from UI.UI_TestMainwindow import Ui_MainWindow
 
 
-# Press the green button in the gutter to run the script.
+class RFFE_Vorlage_Schreiber(QtWidgets.QMainWindow):
+
+    def Angebotsvorlage(self):
+        if self.ui.tp_cbox.currentText() == "Angebot-Stundenpreis":
+            self.Vorlage = Wd_Angbotsvorlage()
+            self.Vorlage.show()
+
+    def __init__(self):
+        super(RFFE_Vorlage_Schreiber, self).__init__()
+        self.Vorlage = None
+        self.ui = Ui_MainWindow()
+        self.ui.setupUi(self)
+        self.ui.ok_btn.clicked.connect(self.Angebotsvorlage)
+
+
 if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    app = QtWidgets.QApplication(sys.argv)
+    window = RFFE_Vorlage_Schreiber()
+    window.show()
+    sys.exit(app.exec_())

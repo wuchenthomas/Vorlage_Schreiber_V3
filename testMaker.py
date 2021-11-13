@@ -1,11 +1,9 @@
 import glob
 import shutil
-from pathlib import Path
 import os
 from py_sub_class.AngStdPreis import LaTeXAng_Stdpr
 import sqlite3
 import pymysql.cursors
-from py_sub_class.Jinja2_basic2PDF import Jinja2_basic
 
 main_path = os.path.abspath(".")
 # print(main_path)
@@ -104,4 +102,23 @@ def test7():
         print(result[0]["LastName"])
 
 
-test7()
+def test8():
+    source_dir = "sourcefolder/Angebot"
+    out_dir = "testfolder"
+    for file in glob.glob(os.path.join(source_dir, "*")):
+        shutil.copy2(file, out_dir)
+        print("copy {} >>>>>>> {}".format(file, out_dir))
+
+
+def test9():
+    for file in glob.glob(os.path.join(source_dir, "*")):
+        print(file)
+
+
+def test10():
+    source_dir = "sourcefolder/Angebot"
+    path = os.path.abspath(os.path.join(os.path.dirname(source_dir), ".."))
+    print(path)
+
+
+test10()

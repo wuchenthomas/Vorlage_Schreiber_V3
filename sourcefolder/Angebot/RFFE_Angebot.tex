@@ -26,6 +26,11 @@
 	{Sehr geehrter Herr \VAR{kd.Titel}}
 	{Sehr geehrte Frau \VAR{kd.Titel}}%
 }
+\newcommand\CompLen[1]{%
+	\StrLen{#1}[\MyStrLen]% we find the length of the string and store it in \MyStrLen
+	\ifthenelse{\equal{\MyStrLen}{0}}% we compare the length of the string with 6
+	{}%if true, Erg will not be shown
+	{\kdFaNErg\newline}}
 
 %--------------Transfer variables to Komascript------------------
 \setkomavar{AngebotsNr}{\AngebotsNr}
@@ -35,14 +40,15 @@
 
 %----------------------end setting variables--------------------------
 \begin{document}
+	
 	\begin{letter}
 	{
-		% Hier Adresse eintragen, wer bekommts?
+
 		\kdFaN\newline
-		\kdFaNErg\newline
-		\kdVN\:\kdNN\newline
+		\CompLen{\kdFaNErg}
+		\kdVN\hspace*{0.5em}\kdNN\newline
 		\kdAnschr\newline
-		\kdPLZ\:\kdSt
+		\kdPLZ\hspace*{0.5em}\kdSt
 	}
 	% Hier Autor eintragen
 

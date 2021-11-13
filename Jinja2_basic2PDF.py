@@ -23,7 +23,7 @@ class Jinja2_basic:
         self.template = None
         self.tex_output = None
         self.out_name = None
-        self.compile_mode = "pdflatex"
+        self.compile_mode = "lualatex"
         self.pars_dic = pars_dic
         self.latex_jinja_env = jinja2.Environment(
             block_start_string='\BLOCK{',
@@ -36,7 +36,7 @@ class Jinja2_basic:
             line_comment_prefix='%#',
             trim_blocks=True,
             autoescape=False,
-            loader=jinja2.FileSystemLoader(root_dir)
+            loader=jinja2.FileSystemLoader(os.path.abspath(''))
         )
 
     def __repr__(self):
@@ -58,6 +58,9 @@ class Jinja2_basic:
             print("Template Not Found")
             return
 
+    def get_pdf_loc(self):
+        return os.path.join(self.out_dir, self.out_name + ".pdf")
+
     def set_output_name(self, out_name):
         self.out_name = out_name
 
@@ -74,8 +77,8 @@ class Jinja2_basic:
             print("{} is created".format(self.out_dir))
         else:
             print("{} is existed".format(self.out_dir))
-
-        for file in glob.glob(os.path.join(self.source_dir, "*")):
+        # print(glob.glob(os.path.abspath(os.path.join(self.source_dir, "*"))))
+        for file in glob.glob(os.path.abspath(os.path.join(self.source_dir, "*"))):
             shutil.copy2(file, self.out_dir)
             print("copy {} >>>>>>> {}".format(file, self.out_dir))
 
@@ -83,16 +86,16 @@ class Jinja2_basic:
         pass
 
     def compile_PDF(self):
+        print(self.__repr__())
         self.copy_SF2out_dir()
         self.write_pars()
-        mode = self.compile_mode
         with open(os.path.join(self.out_dir, self.out_name) + ".tex", "w") as tex:
             tex.write(self.tex_output)
         try:
             for i in range(2):  # It looks like compiling twice would avoid some strange problems...
                 # Parameters sometimes cannot be written in
                 os.chdir(self.out_dir)
-                os.system("{} {}.tex".format(mode, self.out_name))
+                os.system("{} {}.tex".format(self.compile_mode, self.out_name))
                 os.chdir(self.root_dir)
         except os.error as e:
             print(e)

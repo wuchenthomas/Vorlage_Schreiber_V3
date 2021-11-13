@@ -4,6 +4,7 @@
 \usepackage{blindtext}
 \usepackage{setspace}
 \usepackage{lastpage}
+\usepackage{xstring}
 %-------------------------------------------------------------
 \DeclareOption{de}{
 	\newcommand{\classtoggle}{de}
