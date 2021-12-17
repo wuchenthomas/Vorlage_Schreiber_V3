@@ -5,17 +5,17 @@ from PyQt5.QtWidgets import QApplication, QWidget, QHeaderView, QAbstractItemVie
     QTableWidgetItem, QVBoxLayout, QHBoxLayout, QMessageBox
 from PyQt5.QtCore import Qt
 
-table_header = ["Sex", "FirstName", "LastName", "Name", "Address1", "Address2", "PostCode", "Country"]
+table_header = ["Sex", "FirstName", "LastName", "Name", "Address1", "Address2", "PostCode","City","Country"]
 
 
 class TableWidget(QTableWidget):
     def __init__(self):
-        super().__init__(1, 8)
+        super().__init__(1, len(table_header))
         self.setHorizontalHeaderLabels(table_header)
         # self.verticalHeader().setDefaultSectionSize(50)
         # self.horizontalHeader().setDefaultSectionSize(250)
         self.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
-        # self.load_db()
+        self.load_db()
 
     def closeEvent(self, event):
         reply = QMessageBox.question(self, 'Quit?',
@@ -54,7 +54,8 @@ class TableWidget(QTableWidget):
                     self.setItem(self.rowCount() - 1, 4, QTableWidgetItem(str(row["Address1"])))
                     self.setItem(self.rowCount() - 1, 5, QTableWidgetItem(str(row["Address2"])))
                     self.setItem(self.rowCount() - 1, 6, QTableWidgetItem(str(row["PostCode"])))
-                    self.setItem(self.rowCount() - 1, 7, QTableWidgetItem(str(row["Country"])))
+                    self.setItem(self.rowCount() - 1, 7, QTableWidgetItem(str(row["City"])))
+                    self.setItem(self.rowCount() - 1, 8, QTableWidgetItem(str(row["Country"])))
                     self.insertRow(self.rowCount())
                 self._removeRow()
         except pymysql.err.Error as E:
@@ -77,7 +78,7 @@ class TableWidget(QTableWidget):
             for i in range(self.columnCount()):
                 row_info.append(self.item(sr, i).text())
         row_info = dict(zip(table_header, row_info))
-        print(row_info)
+        # print(row_info, "in DB_viewer")
         return row_info
 
 
@@ -86,27 +87,29 @@ class DB_viewer(QWidget):
         super().__init__()
         self.resize(1600, 600)
 
-        mainLayout = QHBoxLayout()
-        table = TableWidget()
-        mainLayout.addWidget(table)
-        buttonLayout = QVBoxLayout()
+        self.mainLayout = QHBoxLayout()
+        self.table = TableWidget()
+        self.mainLayout.addWidget(self.table)
+        self.buttonLayout = QVBoxLayout()
 
-        button_reload = QPushButton('Reload')
-        button_reload.clicked.connect(table.load_db)
-        buttonLayout.addWidget(button_reload)
+        self.button_reload = QPushButton('Reload')
+        self.button_reload.clicked.connect(self.table.load_db)
+        self.buttonLayout.addWidget(self.button_reload)
 
         # button_copy = QPushButton('Copy')
         # button_copy.clicked.connect(table._copyRow)
         # buttonLayout.addWidget(button_copy)
 
-        button_select = QPushButton('Select')
-        button_select.clicked.connect(table.get_selected_row)
+        self.button_select = QPushButton('Select')
+        self.button_select.clicked.connect(self.table.get_selected_row)
         # buttonLayout.addWidget(button_remove, alignment=Qt.AlignTop)
-        buttonLayout.addWidget(button_select)
+        self.buttonLayout.addWidget(self.button_select)
 
-        mainLayout.addLayout(buttonLayout)
-        self.setLayout(mainLayout)
+        self.mainLayout.addLayout(self.buttonLayout)
+        self.setLayout(self.mainLayout)
 
+    def get_info_from_DB(self):
+        self.table.get_selected_row()
 # app = QApplication(sys.argv)
 # app.setStyleSheet('QPushButton{font-size: 20px; width: 200px; height: 50px}')
 # demo = DB_viewer()

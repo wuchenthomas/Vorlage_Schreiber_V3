@@ -3,6 +3,7 @@
 \usepackage{lmodern}
 \usepackage{blindtext}
 \usepackage{lastpage}
+\usepackage{pdfpages}
 %\usepackage{mathptmx} %use font new Times roman
 %----------------------or use Arial-------------------------- 
 %\renewcommand{\familydefault}{\sfdefault}

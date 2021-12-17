@@ -42,12 +42,13 @@ class Wd_Angbotsvorlage(Ui_AngWindow):
         }
         Absender = self.ui.Abs_le.text()
         LBloc = self.ui.LBpath_le.text()
+        LBformat = self.ui.LB_format_cb.currentText()
         main_dir = os.path.dirname(os.path.abspath(__file__))
         outdir = os.path.join(self.ui.out_dic_le.text(), AngInfo['Nr'])
         # outdir = os.path.join('/home/chen/PycharmProjects/Vorlage_Schreiber_V3/testfolder', AngInfo['Nr'])
         Angebot = LaTeXAng_Stdpr(root_dir=main_dir, out_dir=outdir, AngInfo=AngInfo, KdInfo=KdInfo, Absender=Absender)
 
-        LB = LaTeX_LB(root_dir=main_dir, out_dir=outdir, AngInfo=AngInfo, LBloc=LBloc)
+        LB = LaTeX_LB(root_dir=main_dir, out_dir=outdir, AngInfo=AngInfo, LBloc=LBloc, LBformat=LBformat)
         try:
             Angebot.compile_PDF()
             LB.compile_PDF()
@@ -74,6 +75,18 @@ class Wd_Angbotsvorlage(Ui_AngWindow):
     def connect_to_DB(self):
         self.DB.show()
 
+    def get_contact_from_DB(self):
+        print(self.DB.table.get_selected_row(), "in WD")
+        slt_row = self.DB.table.get_selected_row()
+        self.ui.KdVN_le.setText(slt_row['FirstName']) if bool(slt_row['FirstName']) else None
+        self.ui.KdNN_le.setText(slt_row['LastName']) if bool(slt_row['LastName']) else None
+        self.ui.FaN_le.setText(slt_row['Name']) if bool(slt_row['Name']) else None
+        self.ui.Anschr_le.setText(slt_row['Address1']) if bool(slt_row['Address1']) else None
+        self.ui.PLZ_le.setText(slt_row['PostCode']) if bool(slt_row['PostCode']) else None
+        self.ui.St_le.setText(slt_row['City']) if bool(slt_row['City']) else None
+        if bool(slt_row['Sex']):
+            self.ui.KdGeschl_cbox.setCurrentText('M') if slt_row['Sex'] == 'Male' else self.ui.KdGeschl_cbox.setCurrentText('F')
+
     def clear_all(self):
         self.ui.Nr_le.clear()
         self.ui.Bez_te.clear()
@@ -89,6 +102,7 @@ class Wd_Angbotsvorlage(Ui_AngWindow):
 
     def test(self):
         print(self.ui.onePDF_cb.isChecked())
+        print(self.ui.LB_format_cb.currentText())
 
     def __init__(self):
         super(Wd_Angbotsvorlage, self).__init__()
@@ -96,6 +110,7 @@ class Wd_Angbotsvorlage(Ui_AngWindow):
         self.ui.setupUi(self)
         self.setMouseTracking(True)
         self.DB = DB_viewer()
+        self.DB.button_select.clicked.connect(self.get_contact_from_DB)
         self.ui.out_dic_le.setText(os.path.abspath('testfolder'))
         self.ui.PDFG_btn.clicked.connect(self.generate_AngPDF)
         self.ui.LBpathbw_btn.clicked.connect(self.select_LB)
